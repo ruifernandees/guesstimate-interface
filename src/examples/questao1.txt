@@ -14,4 +14,4 @@ IF ave & tem_pernas_longas & pescoco_comprido & preto_e_branco THEN avestruz
 IF ave & not voa & nada & preto_e_branco THEN pinguim
 IF ave & um_bom_voador THEN albatroz
 IF ave & tem_um_corpo_arredondado & penas_densas & not voa & domestico THEN galinha
-IF ave & tem_pernas_longas & tem_pescoco_compridos, tem_cauda_curta & cor_de_rosa THEN flamingo
+IF ave & tem_pernas_longas & tem_pescoco_compridos & tem_cauda_curta & cor_de_rosa THEN flamingo
