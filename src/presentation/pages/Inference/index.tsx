@@ -14,12 +14,20 @@ import { AppContext } from '../../context/AppContext';
 import { KnowledgeDatabase } from '../../../domain/entities/knowledge-database';
 import { parseConstantObjectsToString } from '../../helpers/parseConstantObjectsToString';
 
+export type Threads = 'Encadeamento para trás' | 'Encadeamento para frente' | 'Encadeamento misto'
+
 export const Inference: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
   const { knowledgeDatabase, setKnowledgeDatabase } = useContext(AppContext);
+
+  const threadsTypes: Threads[] = [
+    'Encadeamento para trás',
+    'Encadeamento para frente',
+    'Encadeamento misto',
+  ];
 
   function handleError(errorMessage: string) {
     toast.error(errorMessage, {
@@ -41,6 +49,15 @@ export const Inference: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center w-screen h-screen">
+      <div>
+        <select className='h-10 px-6 w-220 mb-3 flex justify-center items-center font-semibold rounded-md bg-blue-500 hover:bg-blue-600 transition-all ease-in text-white'>
+          {threadsTypes.map((thread: Threads) => (
+            <option value={thread} key={thread}>
+              {thread}
+            </option>
+          ))};
+        </select>
+      </div>
       <div className="flex flex-col mb-10  justify-center">
         <h1 className="text-center text-blue text-2xl font-black">
           Base de Conhecimento
