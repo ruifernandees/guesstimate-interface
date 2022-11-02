@@ -4704,6 +4704,13 @@ grapheme-splitter@^1.0.4:
   resolved "https://registry.yarnpkg.com/grapheme-splitter/-/grapheme-splitter-1.0.4.tgz#9cf3a665c6247479896834af35cf1dbb4400767e"
   integrity sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==
 
+guesstimate-engine@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/guesstimate-engine/-/guesstimate-engine-1.0.0.tgz#51b4f02f54b89f8223dd2f9d5eefd2bb465efdf7"
+  integrity sha512-XUaQ8VGWuFGTRh0NrLwETsUJY0YZ6XPd2EYeEpQdpBLb9vPnWTw4OnrQpcQMAuwc+iIwd+QJpZ+8RzOtnF841A==
+  dependencies:
+    readline-sync "^1.4.10"
+
 gzip-size@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/gzip-size/-/gzip-size-6.0.0.tgz#065367fd50c239c0671cbcbad5be3e2eeb10e462"
@@ -7614,6 +7621,11 @@ readdirp@~3.6.0:
   integrity sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==
   dependencies:
     picomatch "^2.2.1"
+
+readline-sync@^1.4.10:
+  version "1.4.10"
+  resolved "https://registry.yarnpkg.com/readline-sync/-/readline-sync-1.4.10.tgz#41df7fbb4b6312d673011594145705bf56d8873b"
+  integrity sha512-gNva8/6UAe8QYepIQH/jQ2qn91Qj0B9sYjMBBs3QOB8F2CXcKgLxQaJRP76sWVRQt+QU+8fAkCbCvjjMFu7Ycw==
 
 recursive-readdir@^2.2.2:
   version "2.2.3"

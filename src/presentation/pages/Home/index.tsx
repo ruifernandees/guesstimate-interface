@@ -1,17 +1,25 @@
+/* eslint-disable no-continue */
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable no-unused-vars */
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import ReactLoading from 'react-loading';
 import { toast } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
+import { rulesParser } from 'guesstimate-engine';
 import { Dropzone } from '../../components/Dropzone';
+import { LogicalRule } from '../../../domain/entities/logical-rule';
+import { AppContext } from '../../context/AppContext';
+import { KnowledgeDatabase } from '../../../domain/entities/knowledge-database';
 
 const Home: React.FC = () => {
   const [content, setContent] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
+
+  const { knowledgeDatabase, setKnowledgeDatabase } = useContext(AppContext);
 
   function handleError(errorMessage: string) {
     toast.error(errorMessage, {
@@ -20,9 +28,31 @@ const Home: React.FC = () => {
   }
 
   function handleSuccess(name: string) {
-    toast.success(`Hi, ${name}!`, {
+    toast.success(name, {
       theme: 'colored',
     });
+  }
+
+  function handleFileUploaded(file: any) {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const fileContent = event.target?.result?.toString() || '';
+      const rules = rulesParser(fileContent) as LogicalRule[];
+      const initialKnowledgeDatabase = new KnowledgeDatabase(rules);
+      console.log(initialKnowledgeDatabase);
+      setKnowledgeDatabase(initialKnowledgeDatabase);
+    };
+    reader.readAsText(file);
+  }
+
+  function handleGo() {
+    if (!knowledgeDatabase) {
+      handleError('Informe uma base de conhecimento!');
+      return;
+    }
+    handleSuccess('Base reconhecida com sucesso!');
+    navigate('/inference');
+    console.log('OK');
   }
 
   return (
@@ -31,23 +61,23 @@ const Home: React.FC = () => {
         Guesstimate
       </h1>
       <Dropzone
-        onFileUploaded={() => console.log('ok')}
+        onFileUploaded={handleFileUploaded}
       />
       <button
         className="h-10 px-6 w-300 mb-3 flex justify-center items-center font-semibold rounded-md bg-orange-500 hover:bg-orange-600 transition-all ease-in text-white"
-        onClick={() => {}}
+        onClick={handleGo}
       >
         {
           isLoading
             ? <ReactLoading type="spin" color="white" height={24} width={24} />
-            : <p>Go</p>
+            : <p>Continuar</p>
         }
       </button>
       <button
         className="h-10 px-6 w-300 font-semibold rounded-md bg-blue-500 hover:bg-blue-600 transition-all ease-in text-white"
         onClick={() => navigate('/about')}
       >
-        About
+        Sobre
       </button>
     </div>
   );
