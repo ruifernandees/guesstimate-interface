@@ -7,12 +7,14 @@ import './styles.css';
 
 export const Dropzone: React.FC<DropzoneProps> = ({ onFileUploaded }) => {
   const [selectedFileUrl, setSelectedFileUrl] = useState<string>('');
+  const [selectedFileName, setSelectedFileName] = useState<string>('');
 
   const onDrop = useCallback((acceptedFiles) => {
     const file = acceptedFiles[0];
 
     const fileUrl = URL.createObjectURL(file);
     setSelectedFileUrl(fileUrl);
+    setSelectedFileName(file.name);
     onFileUploaded(file);
   }, [onFileUploaded]);
 
@@ -28,12 +30,16 @@ export const Dropzone: React.FC<DropzoneProps> = ({ onFileUploaded }) => {
             <input {...getInputProps()} accept="image/*" />
 
             { selectedFileUrl
-              ? <img src={selectedFileUrl} alt="Point thumbnail"/>
+              ? (
+                <p>
+                  {selectedFileName}
+                </p>
+              )
               : (
-                    <p>
-                        <FiUpload />
-                        Imagem do estabelecimento
-                    </p>
+                <p>
+                    <FiUpload />
+                    Base de Conhecimento
+                </p>
               )
             }
 
