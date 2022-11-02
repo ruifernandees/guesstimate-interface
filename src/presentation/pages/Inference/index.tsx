@@ -40,10 +40,8 @@ export const Inference: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center w-screen h-screen">
-      <header >
-      </header>
-      <div className="flex flex-col mb-10 w-250 sm:w-350 justify-center">
+    <div className="flex flex-col items-center w-screen h-screen">
+      <div className="flex flex-col mb-10  justify-center">
         <h1 className="text-center text-blue text-2xl font-black">
           Base de Conhecimento
         </h1>
@@ -83,9 +81,68 @@ export const Inference: React.FC = () => {
             </div>
           </div>
         </div>
-        <h1 className="text-center text-blue text-2xl font-black mt-10">
-          Informações
+        <h1 className="text-center text-blue text-2xl font-black">
+          Fatos
         </h1>
+        <div className="flex flex-col">
+          <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
+              <div className="overflow-hidden">
+                <table className="min-w-full">
+                  <thead className="border-b">
+                    <tr>
+                      <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                        Propriedade
+                      </th>
+                      <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                        Valor
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {
+                    knowledgeDatabase?.getFacts().allLogicalConstants.map((constant, index) => {
+                      const currentRulePosition = index + 1;
+                      return <tr className="border-b" key={currentRulePosition}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{constant.symbol}</td>
+                      <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+
+                      <div className='flex flex-col'>
+                        <div className="">
+                          <input
+                            type="radio"
+                            value="YES"
+                            id={`YES-${constant.symbol}`}
+                            name={`truthy-${constant.symbol}`}
+                          />
+                          <label
+                            className='ml-2 font-normal text-[16px]'
+                            htmlFor={`YES-${constant.symbol}`}
+                          >Sim</label>
+                        </div>
+                        <div>
+                          <input
+                            type="radio"
+                            value="NO"
+                            id={`NO-${constant.symbol}`}
+                            name={`truthy-${constant.symbol}`}
+                          />
+                          <label
+                            className='ml-2 font-normal text-[16px]'
+                            htmlFor={`NO-${constant.symbol}`}
+                          >Não</label>
+                        </div>
+                      </div>
+                      </td>
+                    </tr>;
+                    })
+                  }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
