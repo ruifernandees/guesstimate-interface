@@ -13,9 +13,9 @@ const About: React.FC = () => {
       <div className='flex items-center justify-center'>
         <ArrowBackIcon
           className="cursor-pointer"
-          size={24} 
+          size={24}
           onClick={() => navigate('/')}
-        /> 
+        />
         <h1 className='ml-2 text-center text-blue text-2xl font-black'>Guesstimate</h1>
       </div>
       <h2 className='text-center text-blue text-xl font-medium my-5'>Author: Rui Fernandes</h2>
@@ -48,6 +48,6 @@ const About: React.FC = () => {
       </a>
     </div>
   );
-}
+};
 
 export default About;
