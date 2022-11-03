@@ -18,6 +18,7 @@ export type Threads = 'Encadeamento para trás' | 'Encadeamento para frente' | '
 
 export const Inference: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isSetThreadType, setThreadType] = useState('');
 
   const navigate = useNavigate();
 
@@ -41,6 +42,10 @@ export const Inference: React.FC = () => {
     });
   }
 
+  /*
+  const changeThreadsTypeHandler = (value: Threads) => {
+    setThreadType(value);
+  } */
   useEffect(() => {
     if (!knowledgeDatabase) {
       navigate('/');
@@ -49,15 +54,6 @@ export const Inference: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center w-screen h-screen">
-      <div>
-        <select className='h-10 px-6 w-220 mb-3 flex justify-center items-center font-semibold rounded-md bg-blue-500 hover:bg-blue-600 transition-all ease-in text-white'>
-          {threadsTypes.map((thread: Threads) => (
-            <option value={thread} key={thread}>
-              {thread}
-            </option>
-          ))};
-        </select>
-      </div>
       <div className="flex flex-col mb-10  justify-center">
         <h1 className="text-center text-blue text-2xl font-black">
           Base de Conhecimento
@@ -156,7 +152,16 @@ export const Inference: React.FC = () => {
                     }
                   </tbody>
                 </table>
-                <div className='flex justify-center items-center mt-3'>
+                <div className='flex flex-col justify-center items-center mt-3'>
+                  <div>
+                    <select className='h-10 px-4 w-200 mb-3 flex justify-center items-center font-semibold rounded-md bg-blue-500 hover:bg-blue-600 transition-all ease-in text-white text-center'>
+                      {threadsTypes.map((thread: Threads) => (
+                        <option value={thread} key={thread}>
+                          {thread}
+                        </option>
+                      ))};
+                    </select>
+                  </div>
                   <button className='h-10 px-6 w-250 mb-3 flex justify-center items-center font-semibold rounded-md bg-green-700 hover:bg-green-600 transition-all ease-in text-white'>
                     Confirmar
                   </button>
