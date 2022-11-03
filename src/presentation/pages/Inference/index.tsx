@@ -18,7 +18,7 @@ export type Threads = 'Encadeamento para trás' | 'Encadeamento para frente' | '
 
 export const Inference: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [isSetThreadType, setThreadType] = useState('');
+  const [isSetThreadType, setThreadType] = useState('Encadeamento para trás');
 
   const navigate = useNavigate();
 
@@ -42,10 +42,10 @@ export const Inference: React.FC = () => {
     });
   }
 
-  /*
   const changeThreadsTypeHandler = (value: Threads) => {
     setThreadType(value);
-  } */
+    console.log(value);
+  };
   useEffect(() => {
     if (!knowledgeDatabase) {
       navigate('/');
@@ -154,7 +154,9 @@ export const Inference: React.FC = () => {
                 </table>
                 <div className='flex flex-col justify-center items-center mt-3'>
                   <div>
-                    <select className='h-10 px-4 w-200 mb-3 flex justify-center items-center font-semibold rounded-md bg-blue-500 hover:bg-blue-600 transition-all ease-in text-white text-center'>
+                    <select className='h-10 px-4 w-200 mb-3 flex justify-center items-center font-semibold rounded-md bg-blue-500 hover:bg-blue-600 transition-all ease-in text-white text-center'
+                    value={isSetThreadType}
+                    onChange={(e) => changeThreadsTypeHandler(e.target.value as Threads)}>
                       {threadsTypes.map((thread: Threads) => (
                         <option value={thread} key={thread}>
                           {thread}
