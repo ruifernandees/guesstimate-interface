@@ -25,6 +25,7 @@ export const Inference: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSetThreadType, setThreadType] = useState('Encadeamento para trás');
   const [toggleDB, setToggleDB] = useState(false);
+  const [finished, setFinished] = useState(false);
   const [currentFact, setCurrentFact] = useState<string>();
   const [usedFacts, setUsedFacts] = useState<Array<string>>([]);
 
@@ -32,7 +33,8 @@ export const Inference: React.FC = () => {
 
   const { knowledgeDatabase, setKnowledgeDatabase } = useContext(AppContext);
 
-  const [facts, setFacts] = useState(knowledgeDatabase?.getFacts().simpleFactsObjects);
+  const initialFacts = knowledgeDatabase?.getFacts().simpleFactsObjects;
+  const [facts, setFacts] = useState(initialFacts);
 
   const threadsTypes: Threads[] = [
     'Encadeamento para trás',
@@ -99,12 +101,28 @@ export const Inference: React.FC = () => {
     const answer = handleDeduction();
     if (answer) {
       handleSuccess(`É um(a) ${answer}`);
+      setFinished(true);
       return;
     }
+
     const nextFact = Object.keys(updatedFacts).find((fact: string) => {
       return updatedFacts[fact] === undefined && !updateUsedFacts.includes(fact);
     });
+    console.log(nextFact);
+    if (!nextFact) {
+      handleError('Não consegui deduzir!');
+      setFinished(true);
+      return;
+    }
     setCurrentFact(nextFact);
+  }
+
+  function handleReset() {
+    if (!facts) return;
+    setCurrentFact(Object.keys(facts)[0]);
+    setUsedFacts([]);
+    setFacts(initialFacts);
+    setFinished(false);
   }
 
   return (
@@ -113,7 +131,7 @@ export const Inference: React.FC = () => {
         <h1 className="text-center text-blue text-2xl font-black">
           Guesstimate
         </h1>
-        <h2 className="text-center text-blue text-xl font-medium">
+        <h2 className="text-center text-blue text-xl font-medium" onClick={handleReset}>
           Base de dados: {knowledgeDatabase?.name}
         </h2>
         <div className="flex flex-col">
@@ -136,8 +154,16 @@ export const Inference: React.FC = () => {
                         const factFirstChar = factWithoutUnderline[0].toUpperCase();
                         const factNaturalLanguage = factFirstChar + factWithoutUnderline.slice(1);
                         return <tr className="border-b flex flex-col justify-center items-center" key={currentRulePosition}>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{`${factNaturalLanguage}?`}</td>
-                          <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+
+                          {finished ? <button
+                            className='h-10 px-6 w-250 mb-3 flex justify-center items-center font-semibold rounded-md bg-blue-500 hover:bg-blue-400 transition-all ease-in text-white'
+                            onClick={handleReset}
+                          >
+                            Refazer
+                          </button>
+                            : <>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{`${factNaturalLanguage}?`}</td>
+                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
 
                             <div className='flex flex-col'>
                               <div className="">
@@ -172,9 +198,12 @@ export const Inference: React.FC = () => {
                               </div>
                             </div>
                           </td>
+                            </>
+                            }
                         </tr>;
                       })()
                     }
+
                   </tbody>
                 </table>
               </div>
