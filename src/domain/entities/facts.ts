@@ -8,6 +8,8 @@ import { LogicalRule } from './logical-rule';
 export class Facts {
   readonly allLogicalConstants: LogicalConstant[] = [];
 
+  readonly simpleFactsObjects: {[key: string]: boolean|undefined} = {};
+
   constructor(
     logicalRules: LogicalRule[],
   ) {
@@ -22,6 +24,7 @@ export class Facts {
           return item.symbol === constant.logicalConstant;
         });
         if (isOnAllLogicalConstants) continue;
+        this.simpleFactsObjects[constant.logicalConstant] = undefined;
         this.allLogicalConstants.push(new LogicalConstant(constant.logicalConstant));
       }
     }

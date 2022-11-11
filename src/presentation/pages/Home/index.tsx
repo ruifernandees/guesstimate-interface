@@ -37,9 +37,12 @@ const Home: React.FC = () => {
     const reader = new FileReader();
     reader.onload = (event) => {
       const fileContent = event.target?.result?.toString() || '';
-      const rules = rulesParser(fileContent) as LogicalRule[];
-      const initialKnowledgeDatabase = new KnowledgeDatabase(rules);
-      console.log(initialKnowledgeDatabase);
+      const [rulesRaw, targetsRaw] = fileContent.split('TARGETS:');
+      const rulesWithoutBlankSpaces = rulesRaw.split('\n').filter((rule) => rule.trim() !== '').join('\n');
+      console.log(`[${rulesWithoutBlankSpaces}]`, targetsRaw);
+      const rules = rulesParser(rulesWithoutBlankSpaces) as LogicalRule[];
+      const targets = targetsRaw.split('\n').filter((target) => target.trim() !== '');
+      const initialKnowledgeDatabase = new KnowledgeDatabase(rules, targets);
       setKnowledgeDatabase(initialKnowledgeDatabase);
     };
     reader.readAsText(file);

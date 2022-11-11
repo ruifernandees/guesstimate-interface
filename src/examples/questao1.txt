@@ -4,7 +4,7 @@ IF tem_penas THEN ave
 IF voa & bota_ovos THEN ave
 IF mamifero & come_carne THEN carnivoro
 IF mamifero & dentes_pontiagudos & garras & olhos_frontais THEN carnivoro
-IF mamifero e tem_casco THEN ungulado
+IF mamifero & tem_casco THEN ungulado
 IF mamifero & rumina & tem_dedos_pares THEN ungulado
 IF carnivoro & tem_cor_amarelo_tostado & manchas_escuras THEN leopardo
 IF carnivoro & tem_cor_amarelo_tostado & listras_pretas THEN tigre
@@ -15,3 +15,15 @@ IF ave & not voa & nada & preto_e_branco THEN pinguim
 IF ave & um_bom_voador THEN albatroz
 IF ave & tem_um_corpo_arredondado & penas_densas & not voa & domestico THEN galinha
 IF ave & tem_pernas_longas & tem_pescoco_compridos & tem_cauda_curta & cor_de_rosa THEN flamingo
+
+
+TARGETS:
+zebra
+pinguim
+girafa
+avestruz
+albatroz
+galinha
+flamingo
+tigre
+leopardo

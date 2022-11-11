@@ -10,6 +10,7 @@ export class KnowledgeDatabase {
 
   constructor(
     readonly logicalRules: LogicalRule[],
+    readonly targets: string[],
   ) {
     this.facts = new Facts(logicalRules);
   }

@@ -7,7 +7,9 @@ import { toast } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
-import { rulesParser } from 'guesstimate-engine';
+import {
+  rulesParser, backchaining, forwardChainingThatReturnsFacts, hybridChaining, forwardChaining,
+} from 'guesstimate-engine';
 import { Dropzone } from '../../components/Dropzone';
 import { LogicalRule } from '../../../domain/entities/logical-rule';
 import { AppContext } from '../../context/AppContext';
@@ -16,13 +18,22 @@ import { parseConstantObjectsToString } from '../../helpers/parseConstantObjects
 
 export type Threads = 'Encadeamento para trás' | 'Encadeamento para frente' | 'Encadeamento misto'
 
+const ThreadsMapper: {[key: string]: any} = {
+  'Encadeamento para trás': backchaining,
+  'Encadeamento para frente': forwardChaining,
+  'Encadeamento misto': hybridChaining,
+};
+
 export const Inference: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSetThreadType, setThreadType] = useState('Encadeamento para trás');
+  const [toggleDB, setToggleDB] = useState(false);
 
   const navigate = useNavigate();
 
   const { knowledgeDatabase, setKnowledgeDatabase } = useContext(AppContext);
+
+  const [facts, setFacts] = useState(knowledgeDatabase?.getFacts().simpleFactsObjects);
 
   const threadsTypes: Threads[] = [
     'Encadeamento para trás',
@@ -36,8 +47,8 @@ export const Inference: React.FC = () => {
     });
   }
 
-  function handleSuccess(name: string) {
-    toast.success(`Hi, ${name}!`, {
+  function handleSuccess(message: string) {
+    toast.success(message, {
       theme: 'colored',
     });
   }
@@ -46,6 +57,36 @@ export const Inference: React.FC = () => {
     setThreadType(value);
     console.log(value);
   };
+
+  function handleConfirm() {
+    if (!facts) return;
+    if (!knowledgeDatabase?.logicalRules) return;
+    const booleanFacts: {[key: string]: boolean} = {};
+    Object.keys(facts).forEach((fact) => {
+      if (facts[fact] !== undefined) {
+        booleanFacts[fact] = facts[fact] as boolean;
+      }
+    });
+    let answer = '';
+    knowledgeDatabase.targets.every((target) => {
+      const result = ThreadsMapper[isSetThreadType](
+        booleanFacts,
+        knowledgeDatabase.logicalRules as any,
+        target,
+      );
+      if (result) {
+        answer = target;
+        return false;
+      }
+      return true;
+    });
+    if (!answer) {
+      handleError('Informações insuficientes!');
+      return;
+    }
+    handleSuccess(`É um(a) ${answer}`);
+  }
+
   useEffect(() => {
     if (!knowledgeDatabase) {
       navigate('/');
@@ -58,7 +99,14 @@ export const Inference: React.FC = () => {
         <h1 className="text-center text-blue text-2xl font-black">
           Base de Conhecimento
         </h1>
-        <div className="flex flex-col">
+        <button
+          className='h-10 px-6 w-250 mb-3 flex justify-center self-center items-center font-semibold rounded-md bg-green-700 hover:bg-green-600 transition-all ease-in text-white'
+          onClick={() => setToggleDB((previous) => !previous)}
+        >
+          {toggleDB ? 'Esconder' : 'Mostrar'}
+        </button>
+        {
+          toggleDB && <div className="flex flex-col">
           <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
               <div className="overflow-hidden">
@@ -94,6 +142,7 @@ export const Inference: React.FC = () => {
             </div>
           </div>
         </div>
+        }
         <h1 className="text-center text-blue text-2xl font-black">
           Fatos
         </h1>
@@ -127,6 +176,9 @@ export const Inference: React.FC = () => {
                                   value="YES"
                                   id={`YES-${constant.symbol}`}
                                   name={`truthy-${constant.symbol}`}
+                                  onChange={() => {
+                                    setFacts({ ...facts, [constant.symbol]: true });
+                                  }}
                                 />
                                 <label
                                   className='ml-2 font-normal text-[16px]'
@@ -139,11 +191,29 @@ export const Inference: React.FC = () => {
                                   value="NO"
                                   id={`NO-${constant.symbol}`}
                                   name={`truthy-${constant.symbol}`}
+                                  onChange={() => {
+                                    setFacts({ ...facts, [constant.symbol]: false });
+                                  }}
                                 />
                                 <label
                                   className='ml-2 font-normal text-[16px]'
                                   htmlFor={`NO-${constant.symbol}`}
                                 >Não</label>
+                              </div>
+                              <div>
+                                <input
+                                  type="radio"
+                                  value="UNKNOWN"
+                                  id={`UNKNOWN-${constant.symbol}`}
+                                  name={`truthy-${constant.symbol}`}
+                                  onChange={() => {
+                                    setFacts({ ...facts, [constant.symbol]: undefined });
+                                  }}
+                                />
+                                <label
+                                  className='ml-2 font-normal text-[16px]'
+                                  htmlFor={`UNKNOWN-${constant.symbol}`}
+                                >Não sei</label>
                               </div>
                             </div>
                           </td>
@@ -164,7 +234,10 @@ export const Inference: React.FC = () => {
                       ))};
                     </select>
                   </div>
-                  <button className='h-10 px-6 w-250 mb-3 flex justify-center items-center font-semibold rounded-md bg-green-700 hover:bg-green-600 transition-all ease-in text-white'>
+                  <button
+                    className='h-10 px-6 w-250 mb-3 flex justify-center items-center font-semibold rounded-md bg-green-700 hover:bg-green-600 transition-all ease-in text-white'
+                    onClick={handleConfirm}
+                  >
                     Confirmar
                   </button>
                 </div>
