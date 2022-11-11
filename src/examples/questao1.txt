@@ -1,3 +1,6 @@
+NAME: Animais
+
+RULES:
 IF tem_pelo THEN mamifero 
 IF produz_leite THEN mamifero 
 IF tem_penas THEN ave

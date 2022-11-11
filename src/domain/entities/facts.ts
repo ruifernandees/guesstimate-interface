@@ -5,10 +5,12 @@
 import { LogicalConstant, TruthyValue } from './logical-constant';
 import { LogicalRule } from './logical-rule';
 
+export type SimpleFactsObject = {[key: string]: boolean|undefined};
+
 export class Facts {
   readonly allLogicalConstants: LogicalConstant[] = [];
 
-  readonly simpleFactsObjects: {[key: string]: boolean|undefined} = {};
+  readonly simpleFactsObjects: SimpleFactsObject = {};
 
   constructor(
     logicalRules: LogicalRule[],

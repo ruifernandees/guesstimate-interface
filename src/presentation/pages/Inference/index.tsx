@@ -1,19 +1,16 @@
+/* eslint-disable arrow-body-style */
 /* eslint-disable no-continue */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-unused-vars */
 import React, { useContext, useEffect, useState } from 'react';
-import ReactLoading from 'react-loading';
 import { toast } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import {
-  rulesParser, backchaining, forwardChainingThatReturnsFacts, hybridChaining, forwardChaining,
+  backchaining, hybridChaining, forwardChaining,
 } from 'guesstimate-engine';
-import { Dropzone } from '../../components/Dropzone';
-import { LogicalRule } from '../../../domain/entities/logical-rule';
 import { AppContext } from '../../context/AppContext';
-import { KnowledgeDatabase } from '../../../domain/entities/knowledge-database';
 import { parseConstantObjectsToString } from '../../helpers/parseConstantObjectsToString';
 
 export type Threads = 'Encadeamento para trás' | 'Encadeamento para frente' | 'Encadeamento misto'
@@ -28,6 +25,8 @@ export const Inference: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSetThreadType, setThreadType] = useState('Encadeamento para trás');
   const [toggleDB, setToggleDB] = useState(false);
+  const [currentFact, setCurrentFact] = useState<string>();
+  const [usedFacts, setUsedFacts] = useState<Array<string>>([]);
 
   const navigate = useNavigate();
 
@@ -58,9 +57,9 @@ export const Inference: React.FC = () => {
     console.log(value);
   };
 
-  function handleConfirm() {
-    if (!facts) return;
-    if (!knowledgeDatabase?.logicalRules) return;
+  function handleDeduction(): string {
+    if (!facts) return '';
+    if (!knowledgeDatabase?.logicalRules) return '';
     const booleanFacts: {[key: string]: boolean} = {};
     Object.keys(facts).forEach((fact) => {
       if (facts[fact] !== undefined) {
@@ -80,33 +79,134 @@ export const Inference: React.FC = () => {
       }
       return true;
     });
-    if (!answer) {
-      handleError('Informações insuficientes!');
-      return;
-    }
-    handleSuccess(`É um(a) ${answer}`);
+    return answer;
   }
 
   useEffect(() => {
     if (!knowledgeDatabase) {
       navigate('/');
     }
+    if (facts) {
+      setCurrentFact(Object.keys(facts)[0]);
+    }
   }, []);
+
+  function handleNextFact(providedFact: string, value?: boolean) {
+    const updatedFacts = { ...facts, [providedFact]: value };
+    const updateUsedFacts = [...usedFacts, providedFact];
+    setFacts(updatedFacts);
+    setUsedFacts(updateUsedFacts);
+    const answer = handleDeduction();
+    if (answer) {
+      handleSuccess(`É um(a) ${answer}`);
+      return;
+    }
+    const nextFact = Object.keys(updatedFacts).find((fact: string) => {
+      return updatedFacts[fact] === undefined && !updateUsedFacts.includes(fact);
+    });
+    setCurrentFact(nextFact);
+  }
 
   return (
     <div className="flex flex-col items-center w-screen h-screen">
       <div className="flex flex-col mb-10  justify-center">
         <h1 className="text-center text-blue text-2xl font-black">
-          Base de Conhecimento
+          Guesstimate
+        </h1>
+        <h2 className="text-center text-blue text-xl font-medium">
+          Base de dados: {knowledgeDatabase?.name}
+        </h2>
+        <div className="flex flex-col">
+          <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
+              <div className="overflow-hidden">
+                <table className="min-w-full">
+                  <thead className="border-b">
+                    <tr>
+                      <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                      </th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {
+                      currentFact && (() => {
+                        const currentRulePosition = currentFact + 1;
+                        const factWithoutUnderline = currentFact.replace('_', ' ');
+                        const factFirstChar = factWithoutUnderline[0].toUpperCase();
+                        const factNaturalLanguage = factFirstChar + factWithoutUnderline.slice(1);
+                        return <tr className="border-b flex flex-col justify-center items-center" key={currentRulePosition}>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{`${factNaturalLanguage}?`}</td>
+                          <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+
+                            <div className='flex flex-col'>
+                              <div className="">
+                                <button
+                                  className='h-10 px-6 w-250 mb-3 flex justify-center items-center font-semibold rounded-md bg-green-500 hover:bg-green-400 transition-all ease-in text-white'
+                                  onClick={() => {
+                                    handleNextFact(currentFact, true);
+                                  }}
+                                >
+                                 Sim
+                                </button>
+                              </div>
+                              <div>
+                              <button
+                                  className='h-10 px-6 w-250 mb-3 flex justify-center items-center font-semibold rounded-md bg-red-500 hover:bg-red-400 transition-all ease-in text-white'
+                                  onClick={() => {
+                                    handleNextFact(currentFact, false);
+                                  }}
+                                >
+                                 Não
+                                </button>
+                              </div>
+                              <div>
+                                <button
+                                  className='h-10 px-6 w-250 mb-3 flex justify-center items-center font-semibold rounded-md bg-gray-500 hover:bg-gray-400 transition-all ease-in text-white'
+                                  onClick={() => {
+                                    handleNextFact(currentFact, undefined);
+                                  }}
+                                >
+                                  Não sei
+                                </button>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>;
+                      })()
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+        <h1 className="text-center text-blue text-2xl font-black">
+          Recursos Avançados
         </h1>
         <button
-          className='h-10 px-6 w-250 mb-3 flex justify-center self-center items-center font-semibold rounded-md bg-green-700 hover:bg-green-600 transition-all ease-in text-white'
+          className='min-h-20 px-6 w-250 mb-3 flex justify-center self-center items-center font-semibold rounded-md bg-black hover:bg-white border-2 hover:border-black hover:text-black transition-all ease-in text-white'
           onClick={() => setToggleDB((previous) => !previous)}
         >
           {toggleDB ? 'Esconder' : 'Mostrar'}
         </button>
         {
           toggleDB && <div className="flex flex-col">
+            <div className='flex flex-col justify-center items-center mt-3'>
+                  <div>
+                    <select className='h-10 px-4 w-200 mb-3 flex justify-center items-center font-semibold rounded-md bg-blue-500 hover:bg-blue-600 transition-all ease-in text-white text-center'
+                    value={isSetThreadType}
+                    onChange={(e) => changeThreadsTypeHandler(e.target.value as Threads)}>
+                      {threadsTypes.map((thread: Threads) => (
+                        <option value={thread} key={thread}>
+                          {thread}
+                        </option>
+                      ))};
+                    </select>
+                  </div>
+
+            </div>
           <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
               <div className="overflow-hidden">
@@ -140,112 +240,10 @@ export const Inference: React.FC = () => {
                 </table>
               </div>
             </div>
+
           </div>
         </div>
         }
-        <h1 className="text-center text-blue text-2xl font-black">
-          Fatos
-        </h1>
-        <div className="flex flex-col">
-          <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-            <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
-              <div className="overflow-hidden">
-                <table className="min-w-full">
-                  <thead className="border-b">
-                    <tr>
-                      <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                        Propriedade
-                      </th>
-                      <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                        Valor
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {
-                      knowledgeDatabase?.getFacts().allLogicalConstants.map((constant, index) => {
-                        const currentRulePosition = index + 1;
-                        return <tr className="border-b" key={currentRulePosition}>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{constant.symbol}</td>
-                          <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-
-                            <div className='flex flex-col'>
-                              <div className="">
-                                <input
-                                  type="radio"
-                                  value="YES"
-                                  id={`YES-${constant.symbol}`}
-                                  name={`truthy-${constant.symbol}`}
-                                  onChange={() => {
-                                    setFacts({ ...facts, [constant.symbol]: true });
-                                  }}
-                                />
-                                <label
-                                  className='ml-2 font-normal text-[16px]'
-                                  htmlFor={`YES-${constant.symbol}`}
-                                >Sim</label>
-                              </div>
-                              <div>
-                                <input
-                                  type="radio"
-                                  value="NO"
-                                  id={`NO-${constant.symbol}`}
-                                  name={`truthy-${constant.symbol}`}
-                                  onChange={() => {
-                                    setFacts({ ...facts, [constant.symbol]: false });
-                                  }}
-                                />
-                                <label
-                                  className='ml-2 font-normal text-[16px]'
-                                  htmlFor={`NO-${constant.symbol}`}
-                                >Não</label>
-                              </div>
-                              <div>
-                                <input
-                                  type="radio"
-                                  value="UNKNOWN"
-                                  id={`UNKNOWN-${constant.symbol}`}
-                                  name={`truthy-${constant.symbol}`}
-                                  onChange={() => {
-                                    setFacts({ ...facts, [constant.symbol]: undefined });
-                                  }}
-                                />
-                                <label
-                                  className='ml-2 font-normal text-[16px]'
-                                  htmlFor={`UNKNOWN-${constant.symbol}`}
-                                >Não sei</label>
-                              </div>
-                            </div>
-                          </td>
-                        </tr>;
-                      })
-                    }
-                  </tbody>
-                </table>
-                <div className='flex flex-col justify-center items-center mt-3'>
-                  <div>
-                    <select className='h-10 px-4 w-200 mb-3 flex justify-center items-center font-semibold rounded-md bg-blue-500 hover:bg-blue-600 transition-all ease-in text-white text-center'
-                    value={isSetThreadType}
-                    onChange={(e) => changeThreadsTypeHandler(e.target.value as Threads)}>
-                      {threadsTypes.map((thread: Threads) => (
-                        <option value={thread} key={thread}>
-                          {thread}
-                        </option>
-                      ))};
-                    </select>
-                  </div>
-                  <button
-                    className='h-10 px-6 w-250 mb-3 flex justify-center items-center font-semibold rounded-md bg-green-700 hover:bg-green-600 transition-all ease-in text-white'
-                    onClick={handleConfirm}
-                  >
-                    Confirmar
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

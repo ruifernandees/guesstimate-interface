@@ -14,7 +14,6 @@ import { AppContext } from '../../context/AppContext';
 import { KnowledgeDatabase } from '../../../domain/entities/knowledge-database';
 
 const Home: React.FC = () => {
-  const [content, setContent] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -35,14 +34,15 @@ const Home: React.FC = () => {
 
   function handleFileUploaded(file: any) {
     const reader = new FileReader();
+    const removeBlankSpaces = (text: string) => text.trim() !== '';
     reader.onload = (event) => {
       const fileContent = event.target?.result?.toString() || '';
-      const [rulesRaw, targetsRaw] = fileContent.split('TARGETS:');
-      const rulesWithoutBlankSpaces = rulesRaw.split('\n').filter((rule) => rule.trim() !== '').join('\n');
-      console.log(`[${rulesWithoutBlankSpaces}]`, targetsRaw);
+      const [restRaw, targetsRaw] = fileContent.split('TARGETS:');
+      const [dbName, rulesRaw] = restRaw.split('RULES:');
+      const rulesWithoutBlankSpaces = rulesRaw.split('\n').filter(removeBlankSpaces).join('\n');
       const rules = rulesParser(rulesWithoutBlankSpaces) as LogicalRule[];
-      const targets = targetsRaw.split('\n').filter((target) => target.trim() !== '');
-      const initialKnowledgeDatabase = new KnowledgeDatabase(rules, targets);
+      const targets = targetsRaw.split('\n').filter(removeBlankSpaces);
+      const initialKnowledgeDatabase = new KnowledgeDatabase(rules, targets, dbName.replace('NAME:', ''));
       setKnowledgeDatabase(initialKnowledgeDatabase);
     };
     reader.readAsText(file);
