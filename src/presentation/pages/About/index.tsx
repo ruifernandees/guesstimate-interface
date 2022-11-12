@@ -1,9 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import ArrowBackIcon from '../../assets/icons/ArrowBackIcon';
-import GithubIcon from '../../assets/icons/GithubIcon';
-import LinkedInIcon from '../../assets/icons/LinkedInIcon';
-import WebIcon from '../../assets/icons/WebIcon';
 
 const About: React.FC = () => {
   const navigate = useNavigate();

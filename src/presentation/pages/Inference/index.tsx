@@ -140,7 +140,7 @@ export const Inference: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col items-center w-screen h-screen">
+    <div className="flex flex-col items-center w-screen h-screen mt-4">
       <div className="flex flex-col mb-10  justify-center">
       <div className='flex items-center justify-center'>
         <ArrowBackIcon
@@ -232,7 +232,7 @@ export const Inference: React.FC = () => {
           Recursos Avançados
         </h1>
         <button
-          className='min-h-20 px-6 w-250 mb-3 flex justify-center self-center items-center font-semibold rounded-md bg-black hover:bg-white border-2 hover:border-black hover:text-black transition-all ease-in text-white'
+          className='min-h-20 px-6 w-250 mb-3 mt-2 flex justify-center self-center items-center font-semibold rounded-md bg-black hover:bg-white border-2 hover:border-black hover:text-black transition-all ease-in text-white'
           onClick={() => setToggleDB((previous) => !previous)}
         >
           {toggleDB ? 'Esconder' : 'Mostrar'}
