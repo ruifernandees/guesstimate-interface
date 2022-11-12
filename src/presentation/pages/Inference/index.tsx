@@ -12,6 +12,7 @@ import {
 } from 'guesstimate-engine';
 import { AppContext } from '../../context/AppContext';
 import { parseConstantObjectsToString } from '../../helpers/parseConstantObjectsToString';
+import ArrowBackIcon from '../../assets/icons/ArrowBackIcon';
 
 export type Threads = 'Encadeamento para trás' | 'Encadeamento para frente' | 'Encadeamento misto'
 
@@ -128,9 +129,15 @@ export const Inference: React.FC = () => {
   return (
     <div className="flex flex-col items-center w-screen h-screen">
       <div className="flex flex-col mb-10  justify-center">
-        <h1 className="text-center text-blue text-2xl font-black">
-          Guesstimate
-        </h1>
+      <div className='flex items-center justify-center'>
+        <ArrowBackIcon
+          className="cursor-pointer"
+          size={24}
+          onClick={() => navigate('/')}
+        />
+        <h1 className='ml-2 text-center text-blue text-2xl font-black'>Guesstimate</h1>
+      </div>
+
         <h2 className="text-center text-blue text-xl font-medium" onClick={handleReset}>
           Base de dados: {knowledgeDatabase?.name}
         </h2>

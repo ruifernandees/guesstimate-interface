@@ -18,33 +18,24 @@ const About: React.FC = () => {
         />
         <h1 className='ml-2 text-center text-blue text-2xl font-black'>Guesstimate</h1>
       </div>
-      <h2 className='text-center text-blue text-xl font-medium my-5'>Author: Rui Fernandes</h2>
-      <a
-        className="h-10 px-6 w-300 mb-3 flex justify-center items-center font-semibold rounded-md bg-blue-500 hover:bg-blue-600 transition-all ease-in text-white"
-        href="https://ruifernandes.dev"
-        target="_blank"
-        rel="noreferrer"
-      >
-        <WebIcon size={24} color="#FFF" />
-        <p className="ml-2">Portfolio and Blog</p>
-      </a>
+
       <a
         className="h-10 px-6 w-300 mb-3 flex justify-center items-center font-semibold rounded-md bg-blue-500 hover:bg-blue-600 transition-all ease-in text-white"
         href="https://github.com/ruifernandees"
         target="_blank"
         rel="noreferrer"
       >
-        <GithubIcon size={24} color="#FFF" />
-        <p className="ml-2">Github</p>
+        {/* <GithubIcon size={24} color="#FFF" /> */}
+        <p className="ml-2">Rui Fernandes</p>
       </a>
       <a
         className="h-10 px-6 w-300 mb-3 flex justify-center items-center font-semibold rounded-md bg-blue-500 hover:bg-blue-600 transition-all ease-in text-white"
-        href="https://www.linkedin.com/in/ruifernandees"
+        href="https://github.com/PedroAugustoACT"
         target="_blank"
         rel="noreferrer"
       >
-        <LinkedInIcon size={24} color="#FFF" />
-        <p className="ml-2">LinkedIn</p>
+        {/* <LinkedInIcon size={24} color="#FFF" /> */}
+        <p className="ml-2">Pedro Augusto</p>
       </a>
     </div>
   );
