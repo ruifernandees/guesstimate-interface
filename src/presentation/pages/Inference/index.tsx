@@ -107,7 +107,11 @@ export const Inference: React.FC = () => {
     }
 
     const nextFact = Object.keys(updatedFacts).find((fact: string) => {
-      return updatedFacts[fact] === undefined && !updateUsedFacts.includes(fact);
+      return (
+        updatedFacts[fact] === undefined
+        && !updateUsedFacts.includes(fact)
+        && !knowledgeDatabase?.targets.includes(fact)
+      );
     });
     console.log(nextFact);
     if (!nextFact) {
@@ -157,7 +161,7 @@ export const Inference: React.FC = () => {
                     {
                       currentFact && (() => {
                         const currentRulePosition = currentFact + 1;
-                        const factWithoutUnderline = currentFact.replace('_', ' ');
+                        const factWithoutUnderline = currentFact.replaceAll('_', ' ');
                         const factFirstChar = factWithoutUnderline[0].toUpperCase();
                         const factNaturalLanguage = factFirstChar + factWithoutUnderline.slice(1);
                         return <tr className="border-b flex flex-col justify-center items-center" key={currentRulePosition}>
@@ -210,7 +214,6 @@ export const Inference: React.FC = () => {
                         </tr>;
                       })()
                     }
-
                   </tbody>
                 </table>
               </div>

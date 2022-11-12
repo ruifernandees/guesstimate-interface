@@ -12,6 +12,7 @@ import { Dropzone } from '../../components/Dropzone';
 import { LogicalRule } from '../../../domain/entities/logical-rule';
 import { AppContext } from '../../context/AppContext';
 import { KnowledgeDatabase } from '../../../domain/entities/knowledge-database';
+import { parseFileContentToKnowledgeDatabase } from '../../../domain/parsers/parseFileContentToKnowledgeDatabase';
 
 const Home: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -34,15 +35,9 @@ const Home: React.FC = () => {
 
   function handleFileUploaded(file: any) {
     const reader = new FileReader();
-    const removeBlankSpaces = (text: string) => text.trim() !== '';
     reader.onload = (event) => {
       const fileContent = event.target?.result?.toString() || '';
-      const [restRaw, targetsRaw] = fileContent.split('TARGETS:');
-      const [dbName, rulesRaw] = restRaw.split('RULES:');
-      const rulesWithoutBlankSpaces = rulesRaw.split('\n').filter(removeBlankSpaces).join('\n');
-      const rules = rulesParser(rulesWithoutBlankSpaces) as LogicalRule[];
-      const targets = targetsRaw.split('\n').filter(removeBlankSpaces);
-      const initialKnowledgeDatabase = new KnowledgeDatabase(rules, targets, dbName.replace('NAME:', ''));
+      const initialKnowledgeDatabase = parseFileContentToKnowledgeDatabase(fileContent);
       setKnowledgeDatabase(initialKnowledgeDatabase);
     };
     reader.readAsText(file);
