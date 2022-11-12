@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 /* eslint-disable arrow-body-style */
 /* eslint-disable no-continue */
 /* eslint-disable no-restricted-syntax */
@@ -102,7 +103,7 @@ export const Inference: React.FC = () => {
     setUsedFacts(updateUsedFacts);
     const answer = handleDeduction(updatedFacts);
     if (answer) {
-      handleSuccess(`Resultado: ${answer}`);
+      handleSuccess(`Resultado: ${parseNaturalLanguage(answer)}`);
       setFinished(true);
       return;
     }
@@ -121,6 +122,13 @@ export const Inference: React.FC = () => {
       return;
     }
     setCurrentFact(nextFact);
+  }
+
+  function parseNaturalLanguage(text: string) {
+    const textWithoutUnderline = text.replaceAll('_', ' ');
+    const textFirstChar = textWithoutUnderline[0].toUpperCase();
+    const textNaturalLanguage = textFirstChar + textWithoutUnderline.slice(1);
+    return textNaturalLanguage;
   }
 
   function handleReset() {
@@ -162,9 +170,7 @@ export const Inference: React.FC = () => {
                     {
                       currentFact && (() => {
                         const currentRulePosition = currentFact + 1;
-                        const factWithoutUnderline = currentFact.replaceAll('_', ' ');
-                        const factFirstChar = factWithoutUnderline[0].toUpperCase();
-                        const factNaturalLanguage = factFirstChar + factWithoutUnderline.slice(1);
+                        const factNaturalLanguage = parseNaturalLanguage(currentFact);
                         return <tr className="border-b flex flex-col justify-center items-center" key={currentRulePosition}>
 
                           {finished ? <button

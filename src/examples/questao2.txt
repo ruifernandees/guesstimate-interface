@@ -1,21 +1,20 @@
 NAME: Diagnóstico
 
 RULES:
-IF Fadiga & Dor_de_cabeça & Dores_no_corpo & Ocasionais_dores_garganta & Ocasionais_tosse THEN Covid19
-IF Dor_de_cabeça & Garganta_inflamada & Tosse THEN Gripe
-IF Cansaço & Dor_de_cabeça THEN Mononucleose_infecciosa
-IF Cansaço & Garganta_inflamada THEN Amigdalite
-IF Cansaço THEN Estresse
-IF Fadiga & Dor_de_cabeça & Pulsação_elevada & Baixo_nível_de_oxigênio & Perda de olfato & Perda de paladar THEN Covid19
-IF Coriza & Espirro THEN Rinite_Alérgica
-IF Dor de cabeça & Coriza THEN sinusite
+IF fadiga & dor_de_cabeça & dores_no_corpo & ocasionais_dores_garganta & ocasionais_tosses THEN covid19
+IF dor_de_cabeça & garganta_inflamada & tosse THEN gripe
+IF cansaço & dor_de_cabeça THEN mononucleose_infecciosa
+IF cansaço & garganta_inflamada THEN amigdalite
+IF cansaço THEN estresse
+IF fadiga & dor_de_cabeça & pulsação_elevada & baixo_nível_de_oxigênio & perda_de_olfato & perda_de_paladar THEN covid19
+IF coriza & espirro THEN rinite_alergica
+IF dor_de_cabeça & coriza THEN sinusite
 
 TARGETS:
-Covid19
-Gripe
-Mononucleose_infecciosa
-Amigdalite
-Estresse
-Covid19
-Rinite_Alérgica 
+gripe
+mononucleose_infecciosa
+amigdalite
+covid19
+rinite_alergica
 sinusite
+estresse
