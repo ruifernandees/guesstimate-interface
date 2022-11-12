@@ -13,6 +13,7 @@ import {
 import { AppContext } from '../../context/AppContext';
 import { parseConstantObjectsToString } from '../../helpers/parseConstantObjectsToString';
 import ArrowBackIcon from '../../assets/icons/ArrowBackIcon';
+import { SimpleFactsObject } from '../../../domain/entities/facts';
 
 export type Threads = 'Encadeamento para trás' | 'Encadeamento para frente' | 'Encadeamento misto'
 
@@ -60,13 +61,13 @@ export const Inference: React.FC = () => {
     console.log(value);
   };
 
-  function handleDeduction(): string {
-    if (!facts) return '';
+  function handleDeduction(updatedFacts: SimpleFactsObject): string {
+    if (!updatedFacts) return '';
     if (!knowledgeDatabase?.logicalRules) return '';
     const booleanFacts: {[key: string]: boolean} = {};
-    Object.keys(facts).forEach((fact) => {
-      if (facts[fact] !== undefined) {
-        booleanFacts[fact] = facts[fact] as boolean;
+    Object.keys(updatedFacts).forEach((fact) => {
+      if (updatedFacts[fact] !== undefined) {
+        booleanFacts[fact] = updatedFacts[fact] as boolean;
       }
     });
     let answer = '';
@@ -99,9 +100,9 @@ export const Inference: React.FC = () => {
     const updateUsedFacts = [...usedFacts, providedFact];
     setFacts(updatedFacts);
     setUsedFacts(updateUsedFacts);
-    const answer = handleDeduction();
+    const answer = handleDeduction(updatedFacts);
     if (answer) {
-      handleSuccess(`É um(a) ${answer}`);
+      handleSuccess(`Resultado: ${answer}`);
       setFinished(true);
       return;
     }

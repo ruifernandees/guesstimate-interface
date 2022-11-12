@@ -38,6 +38,7 @@ const Home: React.FC = () => {
     reader.onload = (event) => {
       const fileContent = event.target?.result?.toString() || '';
       const initialKnowledgeDatabase = parseFileContentToKnowledgeDatabase(fileContent);
+      console.log(fileContent, initialKnowledgeDatabase);
       setKnowledgeDatabase(initialKnowledgeDatabase);
     };
     reader.readAsText(file);
