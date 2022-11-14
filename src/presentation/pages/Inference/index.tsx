@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   backchaining, hybridChaining, forwardChaining,
 } from 'guesstimate-engine';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
 import { AppContext } from '../../context/AppContext';
 import { parseConstantObjectsToString } from '../../helpers/parseConstantObjectsToString';
 import ArrowBackIcon from '../../assets/icons/ArrowBackIcon';
@@ -115,7 +116,8 @@ export const Inference: React.FC = () => {
         && !knowledgeDatabase?.targets.includes(fact)
       );
     });
-    console.log(nextFact);
+    console.log(knowledgeDatabase?.targets, '😍');
+
     if (!nextFact) {
       handleError('Não consegui deduzir!');
       setFinished(true);
@@ -228,15 +230,16 @@ export const Inference: React.FC = () => {
           </div>
         </div>
       </div>
-        <h1 className="text-center text-blue text-2xl font-black">
+      <div className='flex justify-center items-center flex-row'>
+        <p className="text-center text-blue text-2l font-medium font-black mr-3">
           Recursos Avançados
-        </h1>
-        <button
-          className='min-h-20 px-6 w-250 mb-3 mt-2 flex justify-center self-center items-center font-semibold rounded-md bg-black hover:bg-white border-2 hover:border-black hover:text-black transition-all ease-in text-white'
-          onClick={() => setToggleDB((previous) => !previous)}
-        >
-          {toggleDB ? 'Esconder' : 'Mostrar'}
-        </button>
+        </p>
+        <p
+        className='h-3 w-3'
+        onClick={() => setToggleDB((previous) => !previous)}>
+          {toggleDB ? <FiEye/> : <FiEyeOff/>}
+        </p>
+      </div>
         {
           toggleDB && <div className="flex flex-col">
             <div className='flex flex-col justify-center items-center mt-3'>
