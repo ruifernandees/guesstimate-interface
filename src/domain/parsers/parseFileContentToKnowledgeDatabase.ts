@@ -6,6 +6,8 @@ import { LogicalRule } from '../entities/logical-rule';
 
 const removeBlankSpaces = (text: string) => text.trim() !== '';
 
+const removeLineBreak = (text: string) => text.replaceAll('\n', '').replaceAll('\r', '');
+
 export enum FileContentSeparator {
   TARGETS = 'TARGETS:',
   RULES = 'RULES:',
@@ -20,11 +22,13 @@ export function parseFileContentToKnowledgeDatabase(fileContent: string): Knowle
   const rulesWithoutBlankSpaces = rulesRaw
     .split(lineBreak)
     .filter(removeBlankSpaces)
+    .map(removeLineBreak)
     .join(lineBreak);
   const rules = rulesParser(rulesWithoutBlankSpaces) as LogicalRule[];
   const targets = targetsRaw
     .split(lineBreak)
-    .filter(removeBlankSpaces);
+    .filter(removeBlankSpaces)
+    .map(removeLineBreak);
   const dbName = rawDbName.replace(FileContentSeparator.NAME, '');
   return new KnowledgeDatabase(rules, targets, dbName);
 }
