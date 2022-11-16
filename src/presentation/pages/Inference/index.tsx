@@ -60,7 +60,6 @@ export const Inference: React.FC = () => {
 
   const changeThreadsTypeHandler = (value: Threads) => {
     setThreadType(value);
-    console.log(value);
   };
 
   function handleDeduction(updatedFacts: SimpleFactsObject): string {
@@ -116,8 +115,6 @@ export const Inference: React.FC = () => {
         && !knowledgeDatabase?.targets.includes(fact)
       );
     });
-    console.log(knowledgeDatabase?.targets, '😍');
-
     if (!nextFact) {
       handleError('Não consegui deduzir!');
       setFinished(true);
