@@ -12,6 +12,7 @@ export class KnowledgeDatabase {
     readonly logicalRules: LogicalRule[],
     readonly targets: string[],
     readonly name: string,
+    readonly raw: string,
   ) {
     this.facts = new Facts(logicalRules);
   }

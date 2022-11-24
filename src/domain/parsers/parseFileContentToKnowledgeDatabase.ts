@@ -30,5 +30,5 @@ export function parseFileContentToKnowledgeDatabase(fileContent: string): Knowle
     .filter(removeBlankSpaces)
     .map(removeLineBreak);
   const dbName = rawDbName.replace(FileContentSeparator.NAME, '');
-  return new KnowledgeDatabase(rules, targets, dbName);
+  return new KnowledgeDatabase(rules, targets, dbName, fileContent);
 }

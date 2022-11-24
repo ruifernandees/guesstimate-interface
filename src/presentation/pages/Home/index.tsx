@@ -16,6 +16,7 @@ import { parseFileContentToKnowledgeDatabase } from '../../../domain/parsers/par
 
 const Home: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isEditor, setIsEditor] = useState(false);
 
   const navigate = useNavigate();
 
@@ -57,9 +58,32 @@ const Home: React.FC = () => {
       <h1 className="text-center text-blue text-2xl font-black">
         Guesstimate
       </h1>
-      <Dropzone
+      <div className="flex items-center justify-center mt-5">
+        <button
+          onClick={() => setIsEditor(true)}
+          className={`flex items-center justify-center ${isEditor ? 'bg-blue-400 text-white' : 'bg-gray-100'} w-100 h-10 p-2`}
+        >
+          Editor de BC
+        </button>
+        <button
+          onClick={() => setIsEditor(false)}
+          className={`flex items-center justify-center ${!isEditor ? 'bg-blue-400 text-white' : 'bg-gray-100'} w-100 h-10 p-2`}
+        >
+          Upload da BC
+        </button>
+      </div>
+      {
+        isEditor
+          ? <textarea className="bg-gray-200 border-black border-spacing-2 w-96 h-44 m-5">
+            {
+              knowledgeDatabase?.raw || 'IF fact THEN consequence'
+            }
+          </textarea>
+          : <Dropzone
         onFileUploaded={handleFileUploaded}
       />
+      }
+
       <button
         className="h-10 px-6 w-300 mb-3 flex justify-center items-center font-semibold rounded-md bg-orange-500 hover:bg-orange-600 transition-all ease-in text-white"
         onClick={handleGo}
