@@ -17,6 +17,7 @@ import { parseFileContentToKnowledgeDatabase } from '../../../domain/parsers/par
 const Home: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isEditor, setIsEditor] = useState(false);
+  const [rawContentFromTextArea, setRawContentFromTextArea] = useState('IF fact THEN consequence');
 
   const navigate = useNavigate();
 
@@ -40,6 +41,7 @@ const Home: React.FC = () => {
       const fileContent = event.target?.result?.toString() || '';
       const initialKnowledgeDatabase = parseFileContentToKnowledgeDatabase(fileContent);
       setKnowledgeDatabase(initialKnowledgeDatabase);
+      setRawContentFromTextArea(initialKnowledgeDatabase.raw);
     };
     reader.readAsText(file);
   }
@@ -49,6 +51,15 @@ const Home: React.FC = () => {
       handleError('Informe uma base de conhecimento!');
       return;
     }
+    if (isEditor) {
+      const initialKnowledgeDatabase = parseFileContentToKnowledgeDatabase(rawContentFromTextArea);
+      setKnowledgeDatabase(initialKnowledgeDatabase);
+      console.log('🧠', initialKnowledgeDatabase);
+      handleSuccess('Base reconhecida com sucesso!');
+      navigate('/inference');
+      return;
+    }
+    console.log('👨‍💻', knowledgeDatabase);
     handleSuccess('Base reconhecida com sucesso!');
     navigate('/inference');
   }
@@ -74,11 +85,12 @@ const Home: React.FC = () => {
       </div>
       {
         isEditor
-          ? <textarea className="bg-gray-200 border-black border-spacing-2 w-96 h-44 m-5">
-            {
-              knowledgeDatabase?.raw || 'IF fact THEN consequence'
-            }
-          </textarea>
+          ? <textarea className="bg-gray-200 border-black border-spacing-2 w-96 h-44 m-5" onChange={(event) => {
+            console.log(event.target.value);
+            setRawContentFromTextArea(event.target.value);
+          }}
+          value={rawContentFromTextArea } />
+
           : <Dropzone
         onFileUploaded={handleFileUploaded}
       />
