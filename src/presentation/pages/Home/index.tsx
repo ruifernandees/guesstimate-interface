@@ -17,7 +17,7 @@ import { parseFileContentToKnowledgeDatabase } from '../../../domain/parsers/par
 const Home: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isEditor, setIsEditor] = useState(false);
-  const [rawContentFromTextArea, setRawContentFromTextArea] = useState('IF fact THEN consequence');
+  const [rawContentFromTextArea, setRawContentFromTextArea] = useState('NAME: Example\n\nRULES:\nIF fact THEN consequence\n\nTARGETS:\nconsequence');
 
   const navigate = useNavigate();
 
@@ -47,16 +47,16 @@ const Home: React.FC = () => {
   }
 
   function handleGo() {
-    if (!knowledgeDatabase) {
-      handleError('Informe uma base de conhecimento!');
-      return;
-    }
-    if (isEditor) {
+    if (isEditor && rawContentFromTextArea) {
       const initialKnowledgeDatabase = parseFileContentToKnowledgeDatabase(rawContentFromTextArea);
       setKnowledgeDatabase(initialKnowledgeDatabase);
       console.log('🧠', initialKnowledgeDatabase);
       handleSuccess('Base reconhecida com sucesso!');
       navigate('/inference');
+      return;
+    }
+    if (!knowledgeDatabase) {
+      handleError('Informe uma base de conhecimento!');
       return;
     }
     console.log('👨‍💻', knowledgeDatabase);
