@@ -14,11 +14,12 @@ import { LogicalRule } from '../../../domain/entities/logical-rule';
 import { AppContext } from '../../context/AppContext';
 import { KnowledgeDatabase } from '../../../domain/entities/knowledge-database';
 import { parseFileContentToKnowledgeDatabase } from '../../../domain/parsers/parseFileContentToKnowledgeDatabase';
+import { DEFAULT_DATABASE } from './data';
 
 const Home: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isEditor, setIsEditor] = useState(false);
-  const [rawContentFromTextArea, setRawContentFromTextArea] = useState('NAME: Example\n\nRULES:\nIF fact THEN consequence\n\nTARGETS:\nconsequence');
+  const [rawContentFromTextArea, setRawContentFromTextArea] = useState(DEFAULT_DATABASE);
 
   const navigate = useNavigate();
 
